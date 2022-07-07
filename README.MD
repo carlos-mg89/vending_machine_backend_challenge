@@ -22,3 +22,14 @@ You can visit it on `127.0.0.1`
 ## Access database
 
 Review the docker-compose.yml to check for all DB info.
+
+## Running tests
+
+Run either
+```
+bin/phpunit
+```
+or
+```
+./vendor/bin/simple-phpunit
+```
