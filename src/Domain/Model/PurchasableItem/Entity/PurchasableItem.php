@@ -18,7 +18,7 @@ class PurchasableItem
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=false, unique=true)
      */
     private string $selector;
 
@@ -32,7 +32,7 @@ class PurchasableItem
         return $this->id;
     }
 
-    public function getSelector(): ?string
+    public function getSelector(): string
     {
         return $this->selector;
     }
