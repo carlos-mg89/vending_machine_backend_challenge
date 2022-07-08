@@ -3,7 +3,7 @@
 namespace App\Tests\Application\Service;
 
 use App\Application\Service\InsertCoinService;
-use App\Domain\Model\PurchasableItem\Repository\AvailableCoinRepositoryInterface;
+use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class InsertCoinServiceTest extends TestCase
