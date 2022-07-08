@@ -39,4 +39,11 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
         $availableCoin->increaseStock();
         $this->save($availableCoin);
     }
+
+    public function increaseCurrentlyInserted(float $coinValue): void
+    {
+        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
+        $availableCoin->increaseCurrentlyInserted();
+        $this->save($availableCoin);
+    }
 }

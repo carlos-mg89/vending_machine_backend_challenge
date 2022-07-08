@@ -11,4 +11,6 @@ interface AvailableCoinRepositoryInterface
     public function save(AvailableCoin $availableCoin, bool $flush = true): void;
 
     public function increaseStock(float $coinValue): void;
+
+    public function increaseCurrentlyInserted(float $coinValue): void;
 }

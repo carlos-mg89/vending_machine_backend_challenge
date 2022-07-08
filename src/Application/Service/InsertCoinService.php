@@ -16,5 +16,6 @@ class InsertCoinService
     public function execute(float $coinValue): void
     {
         $this->availableCoinRepository->increaseStock($coinValue);
+        $this->availableCoinRepository->increaseCurrentlyInserted($coinValue);
     }
 }

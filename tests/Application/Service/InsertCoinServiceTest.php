@@ -25,6 +25,10 @@ class InsertCoinServiceTest extends TestCase
             ->expects($this->once())
             ->method("increaseStock")
             ->with($coinValue);
+        $mockedRepository
+            ->expects($this->once())
+            ->method("increaseCurrentlyInserted")
+            ->with($coinValue);
 
         return $mockedRepository;
     }

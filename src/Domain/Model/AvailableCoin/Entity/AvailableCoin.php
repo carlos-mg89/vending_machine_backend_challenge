@@ -21,6 +21,11 @@ class AvailableCoin
      */
     private int $coinStock;
 
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private int $coinCurrentlyInserted;
+
     public function getCoinValue(): float
     {
         return $this->coinValue;
@@ -48,6 +53,25 @@ class AvailableCoin
     public function increaseStock(): self
     {
         $this->coinStock++;
+
+        return $this;
+    }
+
+    public function getCurrentlyInserted(): int
+    {
+        return $this->coinCurrentlyInserted;
+    }
+
+    public function setCurrentlyInserted(int $coinCurrentlyInserted): self
+    {
+        $this->coinCurrentlyInserted = $coinCurrentlyInserted;
+
+        return $this;
+    }
+
+    public function increaseCurrentlyInserted(): self
+    {
+        $this->coinCurrentlyInserted++;
 
         return $this;
     }

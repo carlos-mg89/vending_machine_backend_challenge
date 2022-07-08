@@ -15,13 +15,17 @@ class AvailableCoinFixture extends Fixture
         1.0,
     ];
 
+    public const INITIAL_STOCK = 1;
+    public const INITIAL_CURRENTLY_INSERTED_STOCK = 0;
+
     public function load(ObjectManager $manager): void
     {
         foreach (self::AVAILABLE_COIN_VALUES as $availableCoinValue) {
             $availableCoin = new AvailableCoin();
             $availableCoin
                 ->setCoinValue($availableCoinValue)
-                ->setCoinStock(1);
+                ->setCoinStock(self::INITIAL_STOCK)
+                ->setCurrentlyInserted(self::INITIAL_CURRENTLY_INSERTED_STOCK);
             $manager->persist($availableCoin);
         }
 
