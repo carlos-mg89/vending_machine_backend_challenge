@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Model\PurchasableItem\Entity;
+namespace App\Domain\Model\AvailableCoin\Entity;
 
 use App\Infrastructure\Repository\DoctrineAvailableCoinRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +41,13 @@ class AvailableCoin
     public function setCoinStock(int $coinStock): self
     {
         $this->coinStock = $coinStock;
+
+        return $this;
+    }
+
+    public function increaseStock(): self
+    {
+        $this->coinStock++;
 
         return $this;
     }

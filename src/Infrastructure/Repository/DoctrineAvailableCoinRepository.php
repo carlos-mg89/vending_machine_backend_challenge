@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Model\PurchasableItem\Entity\AvailableCoin;
-use App\Domain\Model\PurchasableItem\Repository\AvailableCoinRepositoryInterface;
+use App\Domain\Model\AvailableCoin\Entity\AvailableCoin;
+use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -31,5 +31,12 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
     public function save(AvailableCoin $availableCoin, bool $flush = true): void
     {
         $this->add($availableCoin, $flush);
+    }
+
+    public function increaseStock(float $coinValue): void
+    {
+        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
+        $availableCoin->increaseStock();
+        $this->save($availableCoin);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Presentation\Controller;
 
+use App\Application\Service\InsertCoinService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +16,12 @@ class CoinController extends AbstractController
         name: 'insert_coin',
         requirements: ["coinValue" => "(?:\d+|\d*\.\d+)"]
     )]
-    function insertCoinAction(float $coinValue): Response
-    {
+    function insertCoinAction(
+        float $coinValue,
+        InsertCoinService $insertCoinService,
+    ): Response {
+        $insertCoinService->execute($coinValue);
+
         return new JsonResponse();
     }
 }
