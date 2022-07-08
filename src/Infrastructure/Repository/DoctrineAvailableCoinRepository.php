@@ -63,4 +63,25 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
         $availableCoin->increaseCurrentlyInserted();
         $this->save($availableCoin);
     }
+
+    /**
+     * @return AvailableCoin[]
+     */
+    public function getAllCurrentlyInserted(): array
+    {
+        return $this->createQueryBuilder('ac')
+            ->where("ac.coinCurrentlyInserted > 0")
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function resetAllCurrentlyInserted(): void
+    {
+        $this->_em->createQueryBuilder()
+            ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinCurrentlyInserted", 0)
+            ->where("ac.coinCurrentlyInserted > 0")
+            ->getQuery()
+            ->getResult();
+    }
 }
