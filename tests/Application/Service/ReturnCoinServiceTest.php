@@ -74,7 +74,7 @@ class ReturnCoinServiceTest extends TestCase
             ->willReturn($insertedCoins);
         $mockedRepository
             ->expects($this->once())
-            ->method("resetAllCurrentlyInserted");
+            ->method("resetAllCurrentlyInsertedAndDecreaseStock");
 
         return $mockedRepository;
     }

@@ -75,10 +75,11 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
             ->getResult();
     }
 
-    public function resetAllCurrentlyInserted(): void
+    public function resetAllCurrentlyInsertedAndDecreaseStock(): void
     {
         $this->_em->createQueryBuilder()
             ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinStock", "ac.coinStock - ac.coinCurrentlyInserted")
             ->set("ac.coinCurrentlyInserted", 0)
             ->where("ac.coinCurrentlyInserted > 0")
             ->getQuery()
