@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Model\AvailableCoin\Entity\AvailableCoin;
+use App\Domain\Model\AvailableCoin\Exception\CoinValueNotFound;
 use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,16 +34,32 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
         $this->add($availableCoin, $flush);
     }
 
+    /**
+     * @throws CoinValueNotFound
+     */
     public function increaseStock(float $coinValue): void
     {
         $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
+
+        if (null == $availableCoin) {
+            throw new CoinValueNotFound($coinValue);
+        }
+
         $availableCoin->increaseStock();
         $this->save($availableCoin);
     }
 
+    /**
+     * @throws CoinValueNotFound
+     */
     public function increaseCurrentlyInserted(float $coinValue): void
     {
         $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
+
+        if (null == $availableCoin) {
+            throw new CoinValueNotFound($coinValue);
+        }
+
         $availableCoin->increaseCurrentlyInserted();
         $this->save($availableCoin);
     }
