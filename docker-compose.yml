@@ -16,6 +16,19 @@ services:
         ports:
             - '12003:3306'
 
+    mariadb_test:
+        image: 'mariadb:10.3'
+        working_dir: /application
+        volumes:
+            - '.:/application'
+        environment:
+            - MYSQL_ROOT_PASSWORD=dev
+            - MYSQL_DATABASE=vending_machine_app_test
+            - MYSQL_USER=dev
+            - MYSQL_PASSWORD=dev
+        ports:
+            - '12004:3306'
+
     webserver:
         image: 'nginx:alpine'
         working_dir: /application
