@@ -3,6 +3,7 @@
 namespace App\Presentation\Controller;
 
 use App\Application\Service\InsertCoinService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +21,14 @@ class CoinController extends AbstractController
         float $coinValue,
         InsertCoinService $insertCoinService,
     ): Response {
-        $insertCoinService->execute($coinValue);
+        $responseStatus = 200;
 
-        return new JsonResponse();
+        try {
+            $insertCoinService->execute($coinValue);
+        } catch (Exception) {
+            $responseStatus = 500;
+        }
+
+        return new JsonResponse(null, $responseStatus);
     }
 }
