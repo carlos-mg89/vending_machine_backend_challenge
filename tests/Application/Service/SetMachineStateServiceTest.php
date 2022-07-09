@@ -2,17 +2,14 @@
 
 namespace App\Tests\Application\Service;
 
-use App\Application\Service\ReturnCoinService;
 use App\Application\Service\SetAvailableCoinsStockService;
 use App\Application\Service\SetMachineStateService;
 use App\Application\Service\SetPurchasableItemsStockService;
-use App\Domain\Model\AvailableCoin\Entity\AvailableCoin;
-use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class SetMachineStateServiceTest extends TestCase
 {
-    public function testGivenOneInsertedCoinWhenExecuteIsCalledThenAvailableCoinRepositoryIncreaseStockIsCalled(): void
+    public function testGivenTwoJsonArraysAsStringWhenExecuteIsCalledThenBothServicesWillBeCalledWithTheirRespectiveJsonArrays(): void
     {
         $service = new SetMachineStateService(
             $this->getSetPurchasableItemsStockService(),
