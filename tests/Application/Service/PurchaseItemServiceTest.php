@@ -14,17 +14,18 @@ use PHPUnit\Framework\TestCase;
 
 class PurchaseItemServiceTest extends TestCase
 {
-    private const DUMMY_COIN_VALUE = 0.1;
+    private const DUMMY_COIN_VALUE = 0.5;
     private const DUMMY_SELECTOR = "dummy-selector";
-    private const DUMMY_ITEM_PRICE = 1.5;
+    private const DUMMY_ITEM_PRICE = 0.5;
     private const STOCK_ZERO = 0;
     private const STOCK_ONE = 1;
+    private const AVAILABLE_COINS_INSERTED = 1;
 
     public function testGivenNullPurchasableItemWhenExecuteIsCalledThenExceptionIsThrown(): void
     {
         $this->expectException(ItemUnknownException::class);
 
-        $availableCoinRepositoryMock = $this->getAvailableCoinRepository([]);
+        $availableCoinRepositoryMock = $this->getAvailableCoinRepositoryThatNoProcessesPurchases([]);
         $purchasableItemRepositoryMock = $this->getPurchasableItemRepository(null);
         $service = new PurchaseItemService($availableCoinRepositoryMock, $purchasableItemRepositoryMock);
 
@@ -35,7 +36,7 @@ class PurchaseItemServiceTest extends TestCase
     {
         $this->expectException(ItemOutOfStockException::class);
 
-        $availableCoinRepositoryMock = $this->getAvailableCoinRepository([]);
+        $availableCoinRepositoryMock = $this->getAvailableCoinRepositoryThatNoProcessesPurchases([]);
         $purchasableItem = $this->getPurchasableItem(self::STOCK_ZERO);
         $purchasableItemRepositoryMock = $this->getPurchasableItemRepository($purchasableItem);
         $service = new PurchaseItemService($availableCoinRepositoryMock, $purchasableItemRepositoryMock);
@@ -48,7 +49,7 @@ class PurchaseItemServiceTest extends TestCase
         $this->expectException(InsertedMoneyInsufficientToGetPurchasableItemException::class);
 
         $availableCoins = $this->getAvailableCoins();
-        $availableCoinRepositoryMock = $this->getAvailableCoinRepository($availableCoins);
+        $availableCoinRepositoryMock = $this->getAvailableCoinRepositoryThatNoProcessesPurchases($availableCoins);
         $purchasableItem = $this->getPurchasableItem(self::STOCK_ONE);
         $purchasableItemRepositoryMock = $this->getPurchasableItemRepository($purchasableItem);
         $service = new PurchaseItemService($availableCoinRepositoryMock, $purchasableItemRepositoryMock);
@@ -56,7 +57,20 @@ class PurchaseItemServiceTest extends TestCase
         $service->execute(self::DUMMY_SELECTOR);
     }
 
-    private function getAvailableCoinRepository(array $items): AvailableCoinRepositoryInterface
+    public function testGivenEnoughInsertCoinsWhenExecuteIsCalledThenCurrentlyInsertedMoneyIsReset(): void
+    {
+        $availableCoins = $this->getAvailableCoins(self::AVAILABLE_COINS_INSERTED);
+        $availableCoinRepositoryMock = $this->getAvailableCoinRepositoryWhichProcessesPurchases($availableCoins);
+        $purchasableItem = $this->getPurchasableItem(self::STOCK_ONE);
+        $purchasableItemRepositoryMock = $this->getPurchasableItemRepository($purchasableItem, true);
+        $service = new PurchaseItemService($availableCoinRepositoryMock, $purchasableItemRepositoryMock);
+
+        $response = $service->execute(self::DUMMY_SELECTOR);
+
+        $this->assertEquals([self::DUMMY_SELECTOR], $response);
+    }
+
+    private function getAvailableCoinRepositoryThatNoProcessesPurchases(array $items): AvailableCoinRepositoryInterface
     {
         $mockedRepository = $this->createMock(AvailableCoinRepositoryInterface::class);
         $mockedRepository
@@ -67,13 +81,32 @@ class PurchaseItemServiceTest extends TestCase
         return $mockedRepository;
     }
 
-    private function getPurchasableItemRepository(?PurchasableItem $item): PurchasableItemRepositoryInterface
+    private function getAvailableCoinRepositoryWhichProcessesPurchases(array $items): AvailableCoinRepositoryInterface
     {
+        $mockedRepository = $this->createMock(AvailableCoinRepositoryInterface::class);
+        $mockedRepository
+            ->expects($this->exactly(2))
+            ->method("getAllCurrentlyInserted")
+            ->willReturn($items);
+        $mockedRepository
+            ->expects($this->once())
+            ->method("resetAllCurrentlyInserted");
+
+        return $mockedRepository;
+    }
+
+    private function getPurchasableItemRepository(
+        ?PurchasableItem $item,
+        bool $shouldProcessPurchase = false,
+    ): PurchasableItemRepositoryInterface {
         $mockedRepository = $this->createMock(PurchasableItemRepositoryInterface::class);
         $mockedRepository
             ->expects($this->once())
             ->method("findOneBySelector")
             ->willReturn($item);
+        $mockedRepository
+            ->expects($shouldProcessPurchase ? $this->once() : $this->exactly(0))
+            ->method("save");
 
         return $mockedRepository;
     }
@@ -93,13 +126,13 @@ class PurchaseItemServiceTest extends TestCase
     /**
      * @return AvailableCoin[]
      */
-    private function getAvailableCoins(): array
+    private function getAvailableCoins(int $insertedCoins = 0): array
     {
         $availableCoin = new AvailableCoin();
         $availableCoin
             ->setCoinValue(self::DUMMY_COIN_VALUE)
             ->setCoinStock(1)
-            ->setCurrentlyInserted(0);
+            ->setCurrentlyInserted($insertedCoins);
 
         return [$availableCoin];
     }
