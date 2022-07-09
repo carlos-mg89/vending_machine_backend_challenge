@@ -39,12 +39,7 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
      */
     public function increaseStock(float $coinValue): void
     {
-        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
-
-        if (null == $availableCoin) {
-            throw new CoinValueNotFound($coinValue);
-        }
-
+        $availableCoin = $this->findOneOrThrowException($coinValue);
         $availableCoin->increaseStock();
         $this->save($availableCoin);
     }
@@ -52,7 +47,7 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
     /**
      * @throws CoinValueNotFound
      */
-    public function decreaseStock(float $coinValue): void
+    private function findOneOrThrowException(float $coinValue): AvailableCoin
     {
         $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
 
@@ -60,6 +55,15 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
             throw new CoinValueNotFound($coinValue);
         }
 
+        return $availableCoin;
+    }
+
+    /**
+     * @throws CoinValueNotFound
+     */
+    public function decreaseStock(float $coinValue): void
+    {
+        $availableCoin = $this->findOneOrThrowException($coinValue);
         $availableCoin->decreaseStock();
         $this->save($availableCoin);
     }
@@ -69,12 +73,7 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
      */
     public function increaseCurrentlyInserted(float $coinValue): void
     {
-        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
-
-        if (null == $availableCoin) {
-            throw new CoinValueNotFound($coinValue);
-        }
-
+        $availableCoin = $this->findOneOrThrowException($coinValue);
         $availableCoin->increaseCurrentlyInserted();
         $this->save($availableCoin);
     }
