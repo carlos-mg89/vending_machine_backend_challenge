@@ -40,4 +40,9 @@ class DoctrinePurchasableItemRepository extends ServiceEntityRepository implemen
             $this->_em->flush();
         }
     }
+
+    public function findOneBySelector(string $selector): ?PurchasableItem
+    {
+        return $this->findOneBy(["selector" => $selector]);
+    }
 }

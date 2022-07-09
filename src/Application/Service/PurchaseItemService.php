@@ -8,7 +8,6 @@ use App\Domain\Model\PurchasableItem\Exception\InsertedMoneyInsufficientToGetPur
 use App\Domain\Model\PurchasableItem\Exception\ItemOutOfStockException;
 use App\Domain\Model\PurchasableItem\Exception\ItemUnknownException;
 use App\Domain\Model\PurchasableItem\Repository\PurchasableItemRepositoryInterface;
-use App\Infrastructure\Repository\DoctrinePurchasableItemRepository;
 
 class PurchaseItemService
 {
@@ -17,7 +16,7 @@ class PurchaseItemService
 
     public function __construct(
         AvailableCoinRepositoryInterface $availableCoinRepository,
-        DoctrinePurchasableItemRepository $purchasableItemRepository,
+        PurchasableItemRepositoryInterface $purchasableItemRepository,
     ) {
         $this->availableCoinRepository = $availableCoinRepository;
         $this->purchasableItemRepository = $purchasableItemRepository;
@@ -30,7 +29,7 @@ class PurchaseItemService
      */
     public function execute(string $selector): array
     {
-        $purchasableItem = $this->purchasableItemRepository->findOneBy(["selector" => $selector]);
+        $purchasableItem = $this->purchasableItemRepository->findOneBySelector($selector);
 
         $this->throwExceptionsIfNeeded($purchasableItem, $selector);
         $this->throwExceptionIfInsufficientMoneyToPurchaseItem($purchasableItem);
