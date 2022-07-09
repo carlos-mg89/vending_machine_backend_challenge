@@ -15,6 +15,14 @@ After that the following Docker containers will be up and running:
 - MariaDB service (which will have a volume attached so state is persisted across different startups)
 - Nginx service
 
+## Initial data
+
+There are some Doctrine fixtures that are inserted into the database every time you start the Docker services.
+
+Basically, we are adding the 0.05, 0.10, 0.25, 1 coins, and the Water, Juice and Soda purchasable items.
+
+They all come with some initial stock, but that can be changed by using the API endpoints.
+
 ## Access web app
 
 You can visit it on `127.0.0.1`
@@ -35,6 +43,21 @@ or
 ```
 
 ## How to use the API
+
+Some API endpoints throw exceptions depending on certain invalid situations. Like requesting for an unknown item.
+
+### Insert money endpoint
+
+Example to add a 0.25 coin: `http://127.0.0.1/coin/0.25`
+Example to add a 1.00 coin: `http://127.0.0.1/coin/1`
+
+### Return inserted coins endpoint
+
+Example to get all inserted coins back: `http://127.0.0.1/coin/RETURN-COIN`
+
+### Purchase item endpoint
+
+Example to purchase Water (you need to have inserted coins previously): `http://127.0.0.1/purchasable_item/GET-Water`
 
 ### Service endpoint
 
