@@ -12,12 +12,21 @@ interface AvailableCoinRepositoryInterface
 
     public function increaseStock(float $coinValue): void;
 
+    public function decreaseStock(float $coinValue): void;
+
     public function increaseCurrentlyInserted(float $coinValue): void;
 
     /**
      * @return AvailableCoin[]
      */
     public function getAllCurrentlyInserted(): array;
+
+    /**
+     * @return AvailableCoin[]
+     */
+    public function getAllWithStock(): array;
+
+    public function resetAllCurrentlyInserted(): void;
 
     public function resetAllCurrentlyInsertedAndDecreaseStock(): void;
 }

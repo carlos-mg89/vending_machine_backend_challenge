@@ -57,6 +57,13 @@ class AvailableCoin
         return $this;
     }
 
+    public function decreaseStock(): self
+    {
+        $this->coinStock--;
+
+        return $this;
+    }
+
     public function getCurrentlyInserted(): int
     {
         return $this->coinCurrentlyInserted;
@@ -74,6 +81,28 @@ class AvailableCoin
         $this->coinCurrentlyInserted++;
 
         return $this;
+    }
+
+    public function getTotalInsertedMoney(): float
+    {
+        $totalInsertedMoney = 0;
+
+        for ($i = 0; $i < $this->getCurrentlyInserted(); $i++) {
+            $totalInsertedMoney += $this->getCoinValue();
+        }
+
+        return $totalInsertedMoney;
+    }
+
+    public function getStockCoins(): array
+    {
+        $singleStockCoins = [];
+
+        for ($i = 0; $i < $this->getCoinStock(); $i++) {
+            $singleStockCoins[] = $this->getCoinValue();
+        }
+
+        return $singleStockCoins;
     }
 
 }

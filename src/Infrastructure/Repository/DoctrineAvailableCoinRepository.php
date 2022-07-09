@@ -52,6 +52,21 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
     /**
      * @throws CoinValueNotFound
      */
+    public function decreaseStock(float $coinValue): void
+    {
+        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
+
+        if (null == $availableCoin) {
+            throw new CoinValueNotFound($coinValue);
+        }
+
+        $availableCoin->decreaseStock();
+        $this->save($availableCoin);
+    }
+
+    /**
+     * @throws CoinValueNotFound
+     */
     public function increaseCurrentlyInserted(float $coinValue): void
     {
         $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
@@ -70,6 +85,27 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
     public function getAllCurrentlyInserted(): array
     {
         return $this->createQueryBuilder('ac')
+            ->where("ac.coinCurrentlyInserted > 0")
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return AvailableCoin[]
+     */
+    public function getAllWithStock(): array
+    {
+        return $this->createQueryBuilder('ac')
+            ->where("ac.coinStock > 0")
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function resetAllCurrentlyInserted(): void
+    {
+        $this->_em->createQueryBuilder()
+            ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinCurrentlyInserted", 0)
             ->where("ac.coinCurrentlyInserted > 0")
             ->getQuery()
             ->getResult();
