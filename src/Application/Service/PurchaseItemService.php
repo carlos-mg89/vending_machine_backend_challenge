@@ -2,6 +2,7 @@
 
 namespace App\Application\Service;
 
+use App\Domain\Model\AvailableCoin\Entity\AvailableCoin;
 use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
 use App\Domain\Model\PurchasableItem\Entity\PurchasableItem;
 use App\Domain\Model\PurchasableItem\Exception\InsertedMoneyInsufficientToGetPurchasableItemException;
@@ -89,7 +90,14 @@ class PurchaseItemService
 
         rsort($singleAvailableCoins);
 
-        return $singleAvailableCoins;
+        $filteredSingleAvailableCoins = [];
+        foreach ($singleAvailableCoins as $singleCoin) {
+            if (in_array($singleCoin, AvailableCoin::RETURNABLE_COINS)) {
+                $filteredSingleAvailableCoins[] = $singleCoin;
+            }
+        }
+
+        return $filteredSingleAvailableCoins;
     }
 
     private function processValidPurchaseAndGetChangeCoins(PurchasableItem $purchasableItem): array

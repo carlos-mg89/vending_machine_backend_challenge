@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AvailableCoin
 {
+    public const RETURNABLE_COINS = [0.05, 0.1, 0.25];
     /**
      * @ORM\Id
      * @ORM\Column(type="float")
