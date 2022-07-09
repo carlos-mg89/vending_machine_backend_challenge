@@ -16,7 +16,7 @@ class ReturnCoinService
     public function execute(): array
     {
         $currentlyInsertedCoins = $this->getInsertedCoinsSeparately();
-        $this->availableCoinRepository->resetAllCurrentlyInserted();
+        $this->availableCoinRepository->resetAllCurrentlyInsertedAndDecreaseStock();
 
         return $currentlyInsertedCoins;
     }

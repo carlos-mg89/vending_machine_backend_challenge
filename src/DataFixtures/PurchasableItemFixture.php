@@ -13,6 +13,7 @@ class PurchasableItemFixture extends Fixture
         "Juice" => 1.00,
         "Soda" => 1.50,
     ];
+    public const INITIAL_STOCK = 3;
 
     public function load(ObjectManager $manager): void
     {
@@ -20,7 +21,9 @@ class PurchasableItemFixture extends Fixture
             $purchasableItem = new PurchasableItem();
             $purchasableItem
                 ->setSelector($selector)
-                ->setPrice($price);
+                ->setPrice($price)
+                ->setStock(self::INITIAL_STOCK)
+            ;
             $manager->persist($purchasableItem);
         }
 

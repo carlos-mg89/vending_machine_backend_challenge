@@ -11,4 +11,6 @@ interface PurchasableItemRepositoryInterface
     public function save(PurchasableItem $entity, bool $flush = true): void;
 
     public function remove(PurchasableItem $entity, bool $flush = true): void;
+
+    public function findOneBySelector(string $selector): ?PurchasableItem;
 }

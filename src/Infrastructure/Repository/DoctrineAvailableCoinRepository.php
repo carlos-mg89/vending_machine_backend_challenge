@@ -39,13 +39,32 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
      */
     public function increaseStock(float $coinValue): void
     {
+        $availableCoin = $this->findOneOrThrowException($coinValue);
+        $availableCoin->increaseStock();
+        $this->save($availableCoin);
+    }
+
+    /**
+     * @throws CoinValueNotFound
+     */
+    private function findOneOrThrowException(float $coinValue): AvailableCoin
+    {
         $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
 
         if (null == $availableCoin) {
             throw new CoinValueNotFound($coinValue);
         }
 
-        $availableCoin->increaseStock();
+        return $availableCoin;
+    }
+
+    /**
+     * @throws CoinValueNotFound
+     */
+    public function decreaseStock(float $coinValue): void
+    {
+        $availableCoin = $this->findOneOrThrowException($coinValue);
+        $availableCoin->decreaseStock();
         $this->save($availableCoin);
     }
 
@@ -54,12 +73,7 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
      */
     public function increaseCurrentlyInserted(float $coinValue): void
     {
-        $availableCoin = $this->findOneBy(["coinValue" => $coinValue]);
-
-        if (null == $availableCoin) {
-            throw new CoinValueNotFound($coinValue);
-        }
-
+        $availableCoin = $this->findOneOrThrowException($coinValue);
         $availableCoin->increaseCurrentlyInserted();
         $this->save($availableCoin);
     }
@@ -75,10 +89,32 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
             ->getResult();
     }
 
+    /**
+     * @return AvailableCoin[]
+     */
+    public function getAllWithStock(): array
+    {
+        return $this->createQueryBuilder('ac')
+            ->where("ac.coinStock > 0")
+            ->getQuery()
+            ->getResult();
+    }
+
     public function resetAllCurrentlyInserted(): void
     {
         $this->_em->createQueryBuilder()
             ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinCurrentlyInserted", 0)
+            ->where("ac.coinCurrentlyInserted > 0")
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function resetAllCurrentlyInsertedAndDecreaseStock(): void
+    {
+        $this->_em->createQueryBuilder()
+            ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinStock", "ac.coinStock - ac.coinCurrentlyInserted")
             ->set("ac.coinCurrentlyInserted", 0)
             ->where("ac.coinCurrentlyInserted > 0")
             ->getQuery()
