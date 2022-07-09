@@ -26,6 +26,8 @@ interface AvailableCoinRepositoryInterface
      */
     public function getAllWithStock(): array;
 
+    public function resetStockForAll(): void;
+
     public function resetAllCurrentlyInserted(): void;
 
     public function resetAllCurrentlyInsertedAndDecreaseStock(): void;

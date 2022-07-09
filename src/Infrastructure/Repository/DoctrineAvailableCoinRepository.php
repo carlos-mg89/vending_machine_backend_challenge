@@ -120,4 +120,13 @@ class DoctrineAvailableCoinRepository extends ServiceEntityRepository implements
             ->getQuery()
             ->getResult();
     }
+
+    public function resetStockForAll(): void
+    {
+        $this->_em->createQueryBuilder()
+            ->update(AvailableCoin::class, "ac")
+            ->set("ac.coinStock", 0)
+            ->getQuery()
+            ->getResult();
+    }
 }
