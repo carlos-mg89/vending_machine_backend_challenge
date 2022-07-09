@@ -2,11 +2,6 @@
 
 namespace App\Application\Service;
 
-use App\Domain\Model\AvailableCoin\Repository\AvailableCoinRepositoryInterface;
-use App\Domain\Model\PurchasableItem\Entity\PurchasableItem;
-use App\Domain\Model\PurchasableItem\Exception\InsertedMoneyInsufficientToGetPurchasableItemException;
-use App\Domain\Model\PurchasableItem\Exception\ItemOutOfStockException;
-use App\Domain\Model\PurchasableItem\Exception\ItemUnknownException;
 use App\Domain\Model\PurchasableItem\Repository\PurchasableItemRepositoryInterface;
 
 class SetPurchasableItemsStockService
