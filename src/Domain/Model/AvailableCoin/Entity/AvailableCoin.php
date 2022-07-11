@@ -86,13 +86,7 @@ class AvailableCoin
 
     public function getTotalInsertedMoney(): float
     {
-        $totalInsertedMoney = 0;
-
-        for ($i = 0; $i < $this->getCurrentlyInserted(); $i++) {
-            $totalInsertedMoney += $this->getCoinValue();
-        }
-
-        return $totalInsertedMoney;
+        return $this->getCoinValue() * $this->getCurrentlyInserted();
     }
 
     public function getStockCoins(): array
